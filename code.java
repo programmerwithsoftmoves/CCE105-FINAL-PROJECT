@@ -119,7 +119,7 @@ public class code extends JFrame {
         // RESULT LABEL
 
         JLabel lblResult = new JLabel("Result:");
-        birdFrame.add(lblResult).setBounds(30, 415, 350, 25);
+        birdFrame.add(lblResult).setBounds(30, 415, 390, 40);
 
         // FIND FUNCTION
 
@@ -157,12 +157,30 @@ public class code extends JFrame {
 
             }
 
-            // CALL MIGRATORY BIRDS FUNCTION
+            // START TIMER
+
+            long startTime = System.nanoTime();
+
+            // RUN ORIGINAL ALGORITHM
 
             int answer = migratoryBirds(arr);
 
+            // STOP TIMER
+
+            long endTime = System.nanoTime();
+
+            // CALCULATE RUNTIME
+
+            long runtime = endTime - startTime;
+
+            double runtimeMs = runtime / 1_000_000.0;
+
+            // DISPLAY RESULT AND RUNTIME
+
             lblResult.setText(
-                    "Most Frequent Bird Type: " + answer
+                    "<html>Most Frequent Bird Type: " + answer +
+                    "<br>Runtime: " + runtime + " ns" +
+                    "<br>Runtime: " + runtimeMs + " ms</html>"
             );
 
         });
@@ -171,7 +189,8 @@ public class code extends JFrame {
 
     }
 
-    // MIGRATORY BIRDS FUNCTION
+    // ORIGINAL MIGRATORY BIRDS FUNCTION
+    // REPEATED-SCANNING ALGORITHM
 
     public static int migratoryBirds(int[] arr) {
 
@@ -184,7 +203,7 @@ public class code extends JFrame {
 
             int count = 0;
 
-            // COUNT HOW MANY TIMES THE BIRD TYPE APPEARS
+            // COUNT HOW MANY TIMES THIS BIRD TYPE APPEARS
 
             for (int i = 0; i < arr.length; i++) {
 
@@ -196,7 +215,7 @@ public class code extends JFrame {
 
             }
 
-            // UPDATE IF THE FREQUENCY IS GREATER
+            // UPDATE ONLY IF THE FREQUENCY IS GREATER
 
             if (count > maxCount) {
 
