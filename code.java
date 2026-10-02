@@ -1,239 +1,87 @@
-
 package code;
 
-import javax.swing.*;
-import java.awt.*;
+import java.util.Scanner;
 
-public class code extends JFrame {
+public class code {
 
-    code() {
+	public static int migratoryBirds(int[] arr) {
 
-        setTitle("Migratory Birds");
-        setLayout(null);
-        setSize(400, 220);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+		int maxCount = 0;
+		int result = 1;
 
-        // TITLE
+		for (int type = 1; type <= 5; type++) {
 
-        JLabel lblTitle = new JLabel("Migratory Birds");
-        add(lblTitle).setBounds(30, 20, 200, 25);
+			int count = 0;
 
-        // NUMBER OF SIGHTINGS
+			for (int i = 0; i < arr.length; i++) {
 
-        JLabel lblCount = new JLabel("Number of Bird Sightings");
-        add(lblCount).setBounds(30, 60, 200, 25);
+				if (arr[i] == type) {
+					count++;
+				}
 
-        JTextField txtCount = new JTextField();
-        add(txtCount).setBounds(220, 60, 130, 25);
+			}
 
-        // CONTINUE BUTTON
+			if (count > maxCount) {
 
-        JButton btnContinue = new JButton("Continue");
-        add(btnContinue).setBounds(120, 110, 130, 30);
+				maxCount = count;
+				result = type;
 
-        // CONTINUE FUNCTION
+			}
+		}
 
-        btnContinue.addActionListener(e -> {
+		return result;
+	}
 
-            try {
+	public static void main(String[] args) {
 
-                int n = Integer.parseInt(
-                        txtCount.getText().trim()
-                );
+		Scanner scanner = new Scanner(System.in);
 
-                if (n <= 0) {
+		System.out.print("Enter number of bird sightings: ");
+		int n = scanner.nextInt();
 
-                    JOptionPane.showMessageDialog(null,
-                            "Please enter a number greater than 0.");
+		if (n <= 0) {
+			System.out.println("Please enter a number greater than 0.");
+			scanner.close();
+			return;
+		}
 
-                    return;
-                }
+		int[] arr = new int[n];
 
-                openBirdWindow(n);
+		for (int i = 0; i < n; i++) {
 
-            } catch (NumberFormatException x) {
+			while (true) {
 
-                JOptionPane.showMessageDialog(null,
-                        "Please enter a valid whole number.");
+				System.out.print("Enter Bird #" + (i + 1) + " (1-5): ");
+				int bird = scanner.nextInt();
 
-            }
+				if (bird >= 1 && bird <= 5) {
 
-        });
+					arr[i] = bird;
+					break;
 
-        setVisible(true);
+				} 
+				
+				else {
 
-    }
+					System.out.println("Invalid bird ID. Please enter a number from 1 to 5.");
 
-    // BIRD INPUT WINDOW
+				}
+			}
+		}
 
-    public void openBirdWindow(int n) {
+		long startTime = System.nanoTime();
 
-        JFrame birdFrame = new JFrame("Enter Bird Sightings");
+		int answer = migratoryBirds(arr);
 
-        birdFrame.setLayout(null);
-        birdFrame.setSize(450, 500);
-        birdFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        birdFrame.setLocationRelativeTo(null);
+		long endTime = System.nanoTime();
 
-        // TITLE
+		long runtime = endTime - startTime;
 
-        JLabel lblTitle = new JLabel("Enter Bird IDs (1-5)");
-        birdFrame.add(lblTitle).setBounds(30, 15, 250, 25);
+		System.out.println();
+		System.out.println("===== RESULT =====");
+		System.out.println("Most Frequent Bird Type: " + answer);
+		System.out.println("Execution Time: " + runtime + " ns");
 
-        // PANEL FOR BIRD TEXT FIELDS
-
-        JPanel panel = new JPanel();
-
-        panel.setLayout(new GridLayout(n, 2, 10, 10));
-
-        // ARRAY OF TEXT FIELDS
-
-        JTextField[] txtBirds = new JTextField[n];
-
-        // CREATE A TEXT FIELD FOR EACH BIRD
-
-        for (int i = 0; i < n; i++) {
-
-            JLabel lblBird = new JLabel("Bird #" + (i + 1));
-
-            txtBirds[i] = new JTextField();
-
-            panel.add(lblBird);
-            panel.add(txtBirds[i]);
-
-        }
-
-        // SCROLL PANE
-
-        JScrollPane pane = new JScrollPane(panel);
-
-        birdFrame.add(pane).setBounds(30, 50, 370, 300);
-
-        // FIND BUTTON
-
-        JButton btnFind = new JButton("Find Most Frequent Bird");
-
-        birdFrame.add(btnFind).setBounds(90, 370, 250, 30);
-
-        // RESULT LABEL
-
-        JLabel lblResult = new JLabel("Result:");
-        birdFrame.add(lblResult).setBounds(30, 415, 390, 40);
-
-        // FIND FUNCTION
-
-        btnFind.addActionListener(e -> {
-
-            int[] arr = new int[n];
-
-            // GET AND VALIDATE BIRD IDs
-
-            for (int i = 0; i < n; i++) {
-
-                try {
-
-                    arr[i] = Integer.parseInt(
-                            txtBirds[i].getText().trim()
-                    );
-
-                    if (arr[i] < 1 || arr[i] > 5) {
-
-                        JOptionPane.showMessageDialog(birdFrame,
-                                "Bird #" + (i + 1) +
-                                " must be a number from 1 to 5.");
-
-                        return;
-                    }
-
-                } catch (NumberFormatException x) {
-
-                    JOptionPane.showMessageDialog(birdFrame,
-                            "Please enter a valid number for Bird #" +
-                            (i + 1) + ".");
-
-                    return;
-                }
-
-            }
-
-            // START TIMER
-
-            long startTime = System.nanoTime();
-
-            // RUN ORIGINAL ALGORITHM
-
-            int answer = migratoryBirds(arr);
-
-            // STOP TIMER
-
-            long endTime = System.nanoTime();
-
-            // CALCULATE RUNTIME
-
-            long runtime = endTime - startTime;
-
-            double runtimeMs = runtime / 1_000_000.0;
-
-            // DISPLAY RESULT AND RUNTIME
-
-            lblResult.setText(
-                    "<html>Most Frequent Bird Type: " + answer +
-                    "<br>Runtime: " + runtime + " ns" +
-                    "<br>Runtime: " + runtimeMs + " ms</html>"
-            );
-
-        });
-
-        birdFrame.setVisible(true);
-
-    }
-
-    // ORIGINAL MIGRATORY BIRDS FUNCTION
-    // REPEATED-SCANNING ALGORITHM
-
-    public static int migratoryBirds(int[] arr) {
-
-        int maxCount = 0;
-        int result = 1;
-
-        // CHECK EACH POSSIBLE BIRD TYPE
-
-        for (int type = 1; type <= 5; type++) {
-
-            int count = 0;
-
-            // COUNT HOW MANY TIMES THIS BIRD TYPE APPEARS
-
-            for (int i = 0; i < arr.length; i++) {
-
-                if (arr[i] == type) {
-
-                    count++;
-
-                }
-
-            }
-
-            // UPDATE ONLY IF THE FREQUENCY IS GREATER
-
-            if (count > maxCount) {
-
-                maxCount = count;
-                result = type;
-
-            }
-
-        }
-
-        return result;
-
-    }
-
-    public static void main(String args[]) {
-
-        new code();
-
-    }
-
+		scanner.close();
+	}
 }
